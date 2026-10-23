@@ -1,0 +1,102 @@
+name: OpenIDE Windows build and tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      run_managed_qwen_smoke:
+        description: 'Also download/verify the ~4.7 GB Qwen model and run actual local inference (long-running, internet required)'
+        type: boolean
+        required: true
+        default: false
+
+jobs:
+  build-test-package:
+    runs-on: windows-2022
+    timeout-minutes: 60
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install stable Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Show tool versions
+        shell: pwsh
+        run: |
+          node --version
+          npm --version
+          rustc --version
+          cargo --version
+          pwsh --version
+
+      - name: Install frontend dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Run source contract tests
+        run: npm run test:contracts
+
+      - name: Build frontend and run TypeScript checks
+        run: npm run build
+
+      - name: Install Playwright Chromium for UI smoke tests
+        run: npx playwright install chromium
+
+      - name: Run browser-preview UI smoke tests
+        run: npm run test:e2e
+
+      - name: Upload Playwright diagnostics on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: OpenIDE-Playwright-diagnostics
+          path: |
+            playwright-report/**
+            test-results/**
+          if-no-files-found: ignore
+
+      - name: Run Rust unit tests
+        run: cargo test --manifest-path src-tauri/Cargo.toml
+
+      - name: Build Windows installers
+        run: npm run tauri build
+
+      - name: Upload Windows installer artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: OpenIDE-Windows-installers
+          path: src-tauri/target/release/bundle/**
+          if-no-files-found: error
+
+  managed-qwen-smoke:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_managed_qwen_smoke }}
+    runs-on: windows-2022
+    timeout-minutes: 120
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Show Windows and hardware facts
+        shell: pwsh
+        run: |
+          Get-ComputerInfo | Select-Object WindowsProductName, WindowsVersion, OsBuildNumber, CsProcessors, CsTotalPhysicalMemory | Format-List
+          Get-CimInstance Win32_OperatingSystem | Select-Object Caption, Version, FreePhysicalMemory | Format-List
+          Get-PSDrive -PSProvider FileSystem
+
+      - name: Download/verify Qwen and runtime, then run actual loopback inference
+        shell: pwsh
+        run: .\scripts\verify-managed-qwen.ps1 -Mode InstallAndTest -AppLocalData (Join-Path $env:RUNNER_TEMP 'openide-qwen-smoke') -Port 38577 -RequireFreshVerifiedRuntime
+
+      - name: Upload model/runtime inference evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: OpenIDE-managed-Qwen-smoke-evidence
+          path: verification-evidence/**
+          if-no-files-found: warn

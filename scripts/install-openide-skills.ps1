@@ -63,8 +63,8 @@ if (-not $nodeVersionText) {
 }
 $nodeVersion = [version]($nodeVersionText.Trim() -replace '-.*$', '')
 Write-Host "Node.js: $nodeVersionText"
-if (-not (($nodeVersion.Major -eq 22 -and $nodeVersion -ge [version]'22.19.0') -or ($nodeVersion.Major -ge 24 -and $nodeVersion -ge [version]'24.11.0'))) {
-    Write-Warning 'REA runtime setup recommends Node 22.19+ or Node 24.11+. Upgrade Node before applying host configuration; skill files remain installed.'
+if (-not (($nodeVersion.Major -eq 22 -and $nodeVersion -ge [version]'22.23.4') -or ($nodeVersion.Major -eq 24 -and $nodeVersion -ge [version]'24.22.1') -or ($nodeVersion.Major -ge 26 -and $nodeVersion -ge [version]'26.12.1'))) {
+    Write-Warning 'The current rea-agents package requires Node.js 22.23.4+, 24.22.1+, or 26.12.1+ (supported major lines only). Upgrade Node before applying host configuration; skill files remain installed.'
     exit 0
 }
 

@@ -51,3 +51,8 @@ Then dispatch the same workflow manually with `run_managed_qwen_smoke=true` to r
 ## Current verification caveats
 
 Previous available-environment checks passed source contract tests and syntax checks, but dependency-aware frontend compilation, Cargo tests, Playwright, managed Qwen inference, Windows installer/lifecycle tests, and full offline/security/accessibility acceptance have not yet been evidenced as passing. Never mark OpenIDE release-ready until actual Actions logs and test evidence support it.
+
+
+## Vendored Antigravity skills
+
+Pinned workspace skill instructions are committed under [`.agents/skills/`](.agents/skills/UPSTREAM_SOURCES.md): Paperclip, Ponytail, Headroom, REA (Reverse Engineer Anything), and an OpenIDE-specific Agentic IDE engineering skill. Upstream license copies are under `.agents/skill-licenses/`. Review the sources and provenance before running helper scripts. Installing REA instructions does **not** register its MCP runtime; see the manifest and the project source import instructions above.

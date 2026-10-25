@@ -4,7 +4,7 @@
 
 The GitHub repository is initialized and the Windows build/test workflow is committed, but **the application source files have not yet been imported into this repository**. Do not treat this repository as a complete or buildable OpenIDE checkout yet. This README is explicit about that so an empty build cannot be mistaken for a passing test.
 
-The complete source bundle prepared for this task is available in the conversation as `openide_updated_verification_hardening.zip`. It contains the React/TypeScript frontend, Tauri 2/Rust backend, tests, scripts, documentation, icons, and Windows CI workflow. The bundle's SHA-256 is:
+The complete source bundle prepared for this task is available in the conversation as `openide_agentic_ide_improvements.zip`. It contains the React/TypeScript frontend, Tauri 2/Rust backend, tests, scripts, documentation, icons, and Windows CI workflow. The bundle's SHA-256 is:
 
 `e8000891d7054b961375cabd990660c96f19a9661b34fafc1bebd1f1c6744694`
 
@@ -12,11 +12,11 @@ The complete source bundle prepared for this task is available in the conversati
 
 The GitHub connection available to this session can create/update UTF-8 repository files but does not expose a bulk local-directory or binary-archive push operation. To preserve the exact project files without transcribing source code, import the prepared ZIP locally once:
 
-1. Download `openide_updated_verification_hardening.zip` from the conversation.
+1. Download `openide_agentic_ide_improvements.zip` from the conversation.
 2. Open PowerShell and run the commands below. Change the ZIP path if you saved it somewhere else.
 
 ```powershell
-$Zip = Join-Path $env:USERPROFILE 'Downloads\openide_updated_verification_hardening.zip'
+$Zip = Join-Path $env:USERPROFILE 'Downloads\openide_agentic_ide_improvements.zip'
 $Temp = Join-Path $env:TEMP 'openide-source-import'
 $Repo = Join-Path $env:USERPROFILE 'OPENide'
 
@@ -56,3 +56,7 @@ Previous available-environment checks passed source contract tests and syntax ch
 ## Vendored Antigravity skills
 
 Pinned workspace skill instructions are committed under [`.agents/skills/`](.agents/skills/UPSTREAM_SOURCES.md): Paperclip, Ponytail, Headroom, REA (Reverse Engineer Anything), and an OpenIDE-specific Agentic IDE engineering skill. Upstream license copies are under `.agents/skill-licenses/`. Review the sources and provenance before running helper scripts. Installing REA instructions does **not** register its MCP runtime; see the manifest and the project source import instructions above.
+
+## Agentic IDE improvement bundle
+
+The current source-change bundle is available in the ChatGPT conversation as `openide_agentic_ide_improvements.zip`. The project-specific skill is `.agents/skills/openide-agentic-ide/SKILL.md`; provider, context-budget and model-startup changes are not part of `main` until that source bundle has been imported and pushed. Keep this status explicit: the complete app has not yet been imported into this repository.
